@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell,
+    'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Steam-ish dark theme base */
+  background: radial-gradient(1200px 600px at 20% 0%, #1b2b3a 0%, rgba(27, 43, 58, 0) 60%),
+    radial-gradient(900px 600px at 80% 10%, #122437 0%, rgba(18, 36, 55, 0) 55%),
+    linear-gradient(180deg, #0b141d 0%, #0a1018 60%, #070b10 100%);
+  color: #dbe7f3;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
