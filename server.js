@@ -36,6 +36,58 @@ app.get('/api/revenue-report', async (req, res) => {
     }
 });
 
+// --- API CHO PART 3.1: QUẢN LÝ BẢNG GAME ---
+
+// 1. Thêm Game (Gọi sp_InsertGame)
+app.post('/api/games', async (req, res) => {
+    const { title, base_price, release_date, graphics, os, processor, memory, developer_id } = req.body;
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        await connection.execute(
+            'CALL sp_InsertGame(?, ?, ?, ?, ?, ?, ?, ?)',
+            [title, base_price, release_date, graphics, os, processor, memory, developer_id]
+        );
+        res.json({ message: 'Success: Thêm game thành công!' });
+        await connection.end();
+    } catch (error) {
+        // Bắt lỗi validation từ SIGNAL SQLSTATE trong SQL
+        res.status(400).json({ message: error.message }); 
+    }
+});
+
+// 2. Sửa Game (Gọi sp_UpdateGame)
+app.put('/api/games/:id', async (req, res) => {
+    const game_id = req.params.id;
+    const { title, base_price, release_date, graphics, os, processor, memory } = req.body;
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        await connection.execute(
+            'CALL sp_UpdateGame(?, ?, ?, ?, ?, ?, ?, ?)',
+            [game_id, title, base_price, release_date, graphics, os, processor, memory]
+        );
+        res.json({ message: 'Success: Cập nhật game thành công!' });
+        await connection.end();
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// 3. Xóa Game (Gọi sp_DeleteGame)
+app.delete('/api/games/:id', async (req, res) => {
+    const game_id = req.params.id;
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        await connection.execute(
+            'CALL sp_DeleteGame(?)',
+            [game_id]
+        );
+        res.json({ message: 'Success: Xóa game thành công!' });
+        await connection.end();
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
 const PORT = 5000;
 app.listen(PORT, () => {
     console.log(`Backend Server đang chạy tại http://localhost:${PORT}`);
