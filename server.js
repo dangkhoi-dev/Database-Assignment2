@@ -6,89 +6,144 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Cấu hình kết nối đến XAMPP MySQL
 const dbConfig = {
     host: 'localhost',
-    user: 'root', // Tên user mặc định của XAMPP
-    password: '', // Mật khẩu mặc định của XAMPP thường để trống
+    user: 'root',
+    password: '',
     database: 'SteamDB'
 };
 
-// API Endpoint gọi Procedure
 app.get('/api/revenue-report', async (req, res) => {
     const { startDate, endDate, minRevenue } = req.query;
 
     try {
         const connection = await mysql.createConnection(dbConfig);
-        
-        // Gọi Stored Procedure bằng lệnh CALL
         const [rows] = await connection.execute(
             'CALL GetDeveloperRevenue(?, ?, ?)', 
             [startDate, endDate, minRevenue]
         );
-
-        // Result của Procedure luôn nằm ở mảng đầu tiên
-        res.json(rows[0]); 
+        res.json(rows[0]);
         await connection.end();
     } catch (error) {
-        console.error('Lỗi Database:', error);
-        res.status(500).json({ message: 'Lỗi truy xuất dữ liệu từ Database' });
+        console.error('Database Error:', error);
+        res.status(500).json({ message: 'Error retrieving data from database' });
     }
 });
 
-// --- API CHO PART 3.1: QUẢN LÝ BẢNG GAME ---
+app.get('/api/genres', async (req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute(
+            'SELECT genre_name FROM GENRE ORDER BY genre_name'
+        );
+        const genres = rows.map(r => r.genre_name);
+        res.json(genres);
+        await connection.end();
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ message: 'Error retrieving game genres' });
+    }
+});
 
-// 1. Thêm Game (Gọi sp_InsertGame)
+app.get('/api/developers', async (req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute(
+            'SELECT user_id, legal_name FROM DEVELOPER ORDER BY legal_name'
+        );
+        res.json(rows);
+        await connection.end();
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ message: 'Error retrieving developers' });
+    }
+});
+
+app.get('/api/games', async (req, res) => {
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute(`
+            SELECT g.game_id, g.title, g.base_price, g.release_date, d.legal_name as developer_name
+            FROM GAME g
+            JOIN DEVELOPER d ON g.developer_id = d.user_id
+            ORDER BY g.game_id
+        `);
+        res.json(rows);
+        await connection.end();
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ message: 'Error retrieving games list' });
+    }
+});
+
+app.post('/api/search', async (req, res) => {
+    const { genre, maxPrice } = req.body;
+
+    try {
+        const connection = await mysql.createConnection(dbConfig);
+        const [rows] = await connection.execute(
+            'CALL GetGamesByGenreAndPrice(?, ?)', 
+            [genre, maxPrice]
+        );
+        res.json(rows[0]);
+        await connection.end();
+    } catch (error) {
+        console.error('Database Error:', error);
+        res.status(500).json({ message: 'Error searching games' });
+    }
+});
+
 app.post('/api/games', async (req, res) => {
     const { title, base_price, release_date, graphics, os, processor, memory, developer_id } = req.body;
+
     try {
         const connection = await mysql.createConnection(dbConfig);
         await connection.execute(
-            'CALL sp_InsertGame(?, ?, ?, ?, ?, ?, ?, ?)',
+            'CALL sp_InsertGame(?, ?, ?, ?, ?, ?, ?, ?)', 
             [title, base_price, release_date, graphics, os, processor, memory, developer_id]
         );
-        res.json({ message: 'Success: Thêm game thành công!' });
+        res.json({ message: 'Success: Game added successfully!' });
         await connection.end();
     } catch (error) {
-        // Bắt lỗi validation từ SIGNAL SQLSTATE trong SQL
-        res.status(400).json({ message: error.message }); 
+        res.status(400).json({ message: error.message });
     }
 });
 
-// 2. Sửa Game (Gọi sp_UpdateGame)
 app.put('/api/games/:id', async (req, res) => {
-    const game_id = req.params.id;
+    const gameId = req.params.id;
     const { title, base_price, release_date, graphics, os, processor, memory } = req.body;
+
     try {
         const connection = await mysql.createConnection(dbConfig);
         await connection.execute(
-            'CALL sp_UpdateGame(?, ?, ?, ?, ?, ?, ?, ?)',
-            [game_id, title, base_price, release_date, graphics, os, processor, memory]
+            'CALL sp_UpdateGame(?, ?, ?, ?, ?, ?, ?, ?)', 
+            [gameId, title, base_price, release_date, graphics, os, processor, memory]
         );
-        res.json({ message: 'Success: Cập nhật game thành công!' });
+        res.json({ message: 'Success: Game updated successfully!' });
         await connection.end();
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 });
 
-// 3. Xóa Game (Gọi sp_DeleteGame)
 app.delete('/api/games/:id', async (req, res) => {
-    const game_id = req.params.id;
+    const gameId = req.params.id;
+
     try {
         const connection = await mysql.createConnection(dbConfig);
-        await connection.execute(
-            'CALL sp_DeleteGame(?)',
-            [game_id]
-        );
-        res.json({ message: 'Success: Xóa game thành công!' });
+        await connection.execute('CALL sp_DeleteGame(?)', [gameId]);
+        res.json({ message: 'Success: Game deleted successfully!' });
         await connection.end();
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        if (error.message.includes('already owned')) {
+            res.status(400).json({ message: 'Cannot delete game that is already owned by players' });
+        } else {
+            res.status(400).json({ message: error.message });
+        }
     }
 });
 
 const PORT = 5000;
 app.listen(PORT, () => {
-    console.log(`Backend Server đang chạy tại http://localhost:${PORT}`);
+    console.log(`Backend Server running at http://localhost:${PORT}`);
 });

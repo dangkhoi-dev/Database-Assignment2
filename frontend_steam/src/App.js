@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 // 1. Import components
 import RevenueReport from './RevenueReport';
-// import GameList from './GameList';
+import GameList from './GameList';
 import GameManagement from './GameManagement'; 
 import './App.css';
 
@@ -47,12 +47,10 @@ function App() {
         {/* 3. Render the active component */}
         <main className="steamMainCard">
           {activeTab === 'report' && <RevenueReport />}
-          {activeTab === 'list' && (
-            <div className="steamEmpty">
-              <div className="steamH2">Game List</div>
-              <div className="steamMuted">Component `GameList` is not yet integrated.</div>
-            </div>
-          )}
+          
+          {/* Replaced the empty placeholder with Hung's GameList component */}
+          {activeTab === 'list' && <GameList />} 
+          
           {activeTab === 'form' && <GameManagement />}
         </main>
       </div>
