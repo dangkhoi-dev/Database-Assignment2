@@ -19,19 +19,19 @@ const RevenueReport = () => {
     setLoading(true);
     setError('');
     
-    // Kiểm tra logic ràng buộc (để lấy điểm xử lý lỗi logic)
+    // Check constraints logic
     if (new Date(formData.startDate) > new Date(formData.endDate)) {
-        setError('Lỗi: Ngày bắt đầu không được lớn hơn ngày kết thúc!');
+        setError('Error: Start date cannot be later than end date!');
         setLoading(false);
         return;
     }
 
     try {
-      // Gọi API Backend
+      // Call Backend API
       const queryParams = new URLSearchParams(formData).toString();
       const response = await fetch(`http://localhost:5000/api/revenue-report?${queryParams}`);
       
-      if (!response.ok) throw new Error('Lỗi kết nối đến server');
+      if (!response.ok) throw new Error('Error connecting to the server');
       
       const data = await response.json();
       setReportData(data);
@@ -44,13 +44,13 @@ const RevenueReport = () => {
 
   return (
     <div>
-      <h2 className="steamH2">Báo cáo doanh thu nhà phát triển</h2>
+      <h2 className="steamH2">Developer Revenue Report</h2>
       
-      {/* Form Lọc Dữ Liệu */}
+      {/* Data Filter Form */}
       <form onSubmit={fetchReport} style={{ marginBottom: 16 }}>
         <div className="steamRow">
           <div className="steamField">
-            <label className="steamLabel" htmlFor="startDate">Từ ngày</label>
+            <label className="steamLabel" htmlFor="startDate">From Date</label>
             <input
               id="startDate"
               className="steamInput"
@@ -63,7 +63,7 @@ const RevenueReport = () => {
           </div>
 
           <div className="steamField">
-            <label className="steamLabel" htmlFor="endDate">Đến ngày</label>
+            <label className="steamLabel" htmlFor="endDate">To Date</label>
             <input
               id="endDate"
               className="steamInput"
@@ -76,7 +76,7 @@ const RevenueReport = () => {
           </div>
 
           <div className="steamField" style={{ minWidth: 260 }}>
-            <label className="steamLabel" htmlFor="minRevenue">Doanh thu tối thiểu (VNĐ)</label>
+            <label className="steamLabel" htmlFor="minRevenue">Minimum Revenue (VND)</label>
             <input
               id="minRevenue"
               className="steamInput"
@@ -90,21 +90,21 @@ const RevenueReport = () => {
           </div>
 
           <button className="steamButton" type="submit" disabled={loading}>
-            {loading ? 'Đang tải…' : 'Lọc dữ liệu'}
+            {loading ? 'Loading...' : 'Filter Data'}
           </button>
         </div>
 
         {error && <div className="steamAlert" role="alert">{error}</div>}
       </form>
 
-      {/* Bảng Hiển Thị Kết Quả */}
+      {/* Results Table */}
       {reportData.length > 0 ? (
         <table className="steamTable">
           <thead>
             <tr>
-              <th>Nhà phát triển</th>
-              <th>Tổng số lượt bán</th>
-              <th>Tổng doanh thu (VNĐ)</th>
+              <th>Developer</th>
+              <th>Total Sales</th>
+              <th>Total Revenue (VND)</th>
             </tr>
           </thead>
           <tbody>
@@ -113,7 +113,7 @@ const RevenueReport = () => {
                 <td>{row['Nhà Phát Triển']}</td>
                 <td>{row['Tổng Số Lượt Bán']}</td>
                 <td>
-                  {/* Format tiền VNĐ cho chuyên nghiệp */}
+                  {/* Format VND currency professionally */}
                   {Number(row['Tổng Doanh Thu']).toLocaleString('vi-VN')} đ
                 </td>
               </tr>
@@ -121,7 +121,7 @@ const RevenueReport = () => {
           </tbody>
         </table>
       ) : (
-        !loading && <div className="steamEmpty">Chưa có dữ liệu. Vui lòng nhấn “Lọc dữ liệu”.</div>
+        !loading && <div className="steamEmpty">No data available. Please click "Filter Data".</div>
       )}
     </div>
   );

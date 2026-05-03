@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-// 1. Import các giao diện của từng thành viên vào
-import RevenueReport from './RevenueReport'; // File của bạn (Khôi - Mục 3.3)
-// import GameList from './GameList';         // File của Hùng (Mục 3.2)
-import GameManagement from './GameManagement';         // File của Ân (Mục 3.1)
+// 1. Import components
+import RevenueReport from './RevenueReport';
+// import GameList from './GameList';
+import GameManagement from './GameManagement'; 
 import './App.css';
 
 function App() {
-  // State để nhớ xem người dùng đang bấm vào Tab nào
+  // State to track the active tab
   const [activeTab, setActiveTab] = useState('report');
 
   return (
@@ -15,42 +15,42 @@ function App() {
         <header className="steamTopBar">
           <div className="steamTitleRow">
             <h1 className="steamTitle">Steam Store Management</h1>
-            <p className="steamSubtitle">Dashboard nội bộ • theme mô phỏng Steam</p>
+            <p className="steamSubtitle">Internal Dashboard • Steam-inspired theme</p>
           </div>
 
-          {/* 2. Thanh Menu Điều Hướng */}
-          <nav className="steamTabs" aria-label="Điều hướng">
+          {/* 2. Navigation Menu */}
+          <nav className="steamTabs" aria-label="Navigation">
             <button
               type="button"
               className={`steamTab ${activeTab === 'list' ? 'steamTabActive' : ''}`}
               onClick={() => setActiveTab('list')}
             >
-              Quản lý Game (Hùng)
+              Game List
             </button>
             <button
               type="button"
               className={`steamTab ${activeTab === 'form' ? 'steamTabActive' : ''}`}
               onClick={() => setActiveTab('form')}
             >
-              Thêm/Sửa/Xóa (Ân)
+              Add/Edit/Delete
             </button>
             <button
               type="button"
               className={`steamTab ${activeTab === 'report' ? 'steamTabActive' : ''}`}
               onClick={() => setActiveTab('report')}
             >
-              Báo cáo Doanh thu (Khôi)
+              Revenue Report
             </button>
           </nav>
         </header>
 
-        {/* 3. Khu vực hiển thị Component (Mảnh ghép) tương ứng */}
+        {/* 3. Render the active component */}
         <main className="steamMainCard">
           {activeTab === 'report' && <RevenueReport />}
           {activeTab === 'list' && (
             <div className="steamEmpty">
-              <div className="steamH2">Quản lý Game</div>
-              <div className="steamMuted">Chưa gắn component `GameList`.</div>
+              <div className="steamH2">Game List</div>
+              <div className="steamMuted">Component `GameList` is not yet integrated.</div>
             </div>
           )}
           {activeTab === 'form' && <GameManagement />}
