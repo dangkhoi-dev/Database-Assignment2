@@ -1,0 +1,269 @@
+% 'draft' mode can be used to speed up compilation
+\documentclass[twoside]{hcmut-report}
+\usepackage{codespace}
+% Draft watermark
+% https://github.com/callegar/LaTeX-draftwatermark
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{float}
+% babel and fontenc are already loaded by hcmut-report.cls (with [english] babel
+% and T5 fontenc via vntex). Do not reload them here to avoid option clash.
+\usepackage{xcolor}
+\definecolor{myblue}{RGB}{33, 102, 172}
+\definecolor{myred}{RGB}{180, 50, 50}
+
+\newcommand{\ent}[1]{\textcolor{myblue}{\texttt{#1}}}
+\newcommand{\rulehl}[1]{\textcolor{myred}{#1}}
+% ====== Packages for colored code boxes ======
+\usepackage[most]{tcolorbox}
+\tcbset{
+    colback=gray!10,
+    colframe=gray!60,
+    boxrule=0.6pt,
+    arc=2pt,
+    left=4pt,
+    right=4pt,
+    top=4pt,
+    bottom=4pt
+}
+\usepackage[normalem]{ulem}
+
+\renewcommand{\ent}[1]{\textbf{#1}}
+\newcommand{\attr}[1]{\uline{#1}}
+\newcommand{\rel}[1]{\uline{\textit{#1}}}
+\usepackage{pdflscape}
+\usepackage{caption}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\newtcolorbox{importantbox}{
+  colback=Green!10,          % nền xanh nhạt nhưng đậm hơn trước
+  colframe=ForestGreen!85!black, % viền xanh đậm
+  boxrule=1pt,
+  arc=1mm,
+  left=3mm,
+  right=3mm,
+  top=1mm,
+  bottom=1mm
+}
+\usepackage{listings}
+\usepackage{courier}
+% Encodings
+\usepackage{gensymb,textcomp}
+% Better tables
+% Wide tables go to https://tex.stackexchange.com/q/332902
+\usepackage{array,longtable,multicol,multirow,siunitx,tabularx}
+
+% Better enum
+\usepackage{enumitem}
+% Graphics
+\usepackage{caption,float}
+% Add options for figures, like max width, framing, etc.
+\usepackage[export]{adjustbox}
+% References
+% Use \Cref{} instead of \ref{}
+\usepackage[nameinlink]{cleveref}
+
+% FOR DEMONSTRATION PURPOSES, REMOVE IN PRODUCTION
+\usepackage{mwe}
+
+% Sub-preambles
+% https://github.com/MartinScharrer/standalone
+
+% Configurations
+\coursename{Course name h}
+\reporttype{Report type h}
+\title{Report title h}
+\advisor{& Advisor h &}
+\stuname{%
+  & Student 1 & ID 1 \\
+  & Student 2 & ID 2 \\
+  & Student 3 & ID 3 \\
+}
+
+% Allow page breaks inside align* environment
+%\allowdisplaybreaks{}
+
+% Makes a lot of things blue, avoid at all costs
+%\everymath{\color{blue}}
+
+% Set depth of numbering for counters
+\AtBeginDocument{\counterwithin{lstlisting}{section}}
+
+% Rename some sections
+%\AtBeginDocument{\renewcommand*{\contentsname}{Contents}}
+%\AtBeginDocument{\renewcommand*{\refname}{References}}
+%\AtBeginDocument{\renewcommand*{\bibname}{References}}
+
+% Custom commands
+%\newcommand*\mean[1]{\bar{#1}}
+
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[EL]{
+    \bfseries
+    \begin{tabular}{rl}
+      \begin{picture}(25pt,15pt)
+        \put(0,-8pt){\includegraphics[width=20pt]{graphics/hcmut.png}}
+      \end{picture}
+      \begin{tabular}{l}\\
+        \ttfamily Ho Chi Minh City University of Technology \\ \\
+      \end{tabular}
+    \end{tabular}
+  }
+  \fancyhead[OR]{
+    \bfseries
+    \begin{tabular}{rl}
+      \begin{tabular}{r}\\
+        \ttfamily Ho Chi Minh City University of Technology \\\\
+      \end{tabular}
+      \begin{picture}(25pt,15pt)
+        \put(0,-8pt){\includegraphics[width=20pt]{graphics/hcmut.png}}
+      \end{picture}
+    \end{tabular}
+  }
+  \fancyfoot[L]{\ttfamily{\Large Assignment for Database System - Semester 251}}
+  \fancyfoot[R]{\ttfamily Page {\thepage}/\pageref{LastPage}}
+  \renewcommand{\headrulewidth}{0.4pt}% Line at the header invisible
+  \renewcommand{\footrulewidth}{0.4pt}% Line at the footer visible
+}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+VIETNAM NATIONAL UNIVERSITY, HO CHI MINH CITY \\
+UNIVERSITY OF TECHNOLOGY \\
+FACULTY OF COMPUTER SCIENCE AND ENGINEERING\\
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=5cm]{graphics/hcmut.png}
+\end{center}
+\end{figure}
+
+\vspace{0.5cm}
+
+
+\begin{center}
+\begin{tabular}{c}
+\multicolumn{1}{c}{\textbf{{\Large DATABASE SYSTEM : ASSIGNMENT REPORT }}}\\ %Name of the subject
+~~\\
+\hline
+\\
+\textbf{{\Large Digital Distribution Platform: Steam}} \\
+\textbf{{\large \textit{{Final Report: Database Design, SQL Implementation, Stored Programs, Testing, and Application Implementation}}}}\\
+
+\textbf{{\large \textit{{ Group: 6}}}}\\
+
+ %Name of the topic
+\\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{1cm}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rlll}
+    \hspace{1 cm}\textbf{Instructor}: &  Dương Huỳnh Anh Đức& & \\[10pt]
+
+    \textbf{Students}:
+    & Phan Huy Long    &2352697  & CC03 \\
+    & Phạm Thành Nam & 2352786 & CC03 \\
+    & Trần Phan Đăng Khôi   & 2352626 & CC03 \\
+    & Triệu Thiên Ân  & 2452113 & CC03 \\
+    & Nguyễn Gia Hùng   & 2352422 & CC03 \\
+\end{tabular}
+\end{table}
+
+\vfill
+
+\begin{center}
+{\footnotesize HO CHI MINH CITY, MAY 2026}
+\end{center}
+\end{titlepage}
+
+%\coverpage%
+\section*{Member list \& Workload}
+\begin{center}
+\begin{table}[h]
+\renewcommand\thetable{1}
+\centering
+\small
+\begin{tabular}{|c|l|c|p{7cm}|c|}
+\hline
+\textbf{No.} & \textbf{Name} & \textbf{Student ID} &
+\textbf{Main responsibilities} & \textbf{Contribution} \\
+\hline
+1 & Phan Huy Long & 2352697 &
+Developed Sections 1.1, 4.1 (table implementation, integrity constraints), and 5.2 (trigger computation for derived attributes). Also reviewed the consistency between the application features and the database design from previous parts.
+& 100\% \\
+\hline
+2 & Phạm Thành Nam & 2352786 &
+Developed Section 5.4 (stored functions for business calculations) and finalized the overall report. Compiled and finalized the Part III report including organizing screenshots, descriptions, and captions.
+& 100\% \\
+\hline
+3 & Triệu Thiên Ân & 2452113 &
+Developed Sections 5.1 (insert/update/delete stored procedures) and 6.1 (CRUD interface of the application).
+& 100\% \\
+\hline
+4 & Nguyễn Gia Hùng & 2352422 &
+Developed Sections 4.2 (sample data and derived attribute analysis) and 6.2 (data list interface).
+& 100\% \\
+\hline
+5 & Trần Phan Đăng Khôi & 2352626 &
+Developed Sections 1.2, 1.3, 2, 3, 5.3 (data retrieval procedures), and 6.3 (procedure/function demonstration interface).
+& 100\% \\
+\hline
+\end{tabular}
+\caption{Member list and workload for the merged Part II and Part III report}
+\label{tab:member-workload-merged}
+\end{table}
+\end{center}
+\clearpage
+
+
+\tableofcontents
+
+\clearpage
+
+% =========================================================
+% PART II + PART III MERGED CONTENT (Sections 1.1 -- 6.3)
+% =========================================================
+
+% --- Section 1: Data Requirements Analysis and Description ---
+\input{chapters/1.1}
+\input{chapters/1.2}
+\input{chapters/1.3}
+\input{chapters/1.4}
+
+% --- Section 2: EERD Design ---
+\input{chapters/2}
+
+% --- Section 3: Mapping ---
+\input{chapters/3}
+
+% --- Section 4: Database Implementation ---
+\input{chapters/4.1}
+\input{chapters/4.2}
+
+% --- Section 5: Stored Procedures, Triggers, and Functions ---
+\input{chapters/5.1}
+\input{chapters/5.2}
+\input{chapters/5.3}
+\input{chapters/5.4}
+
+% --- Section 6: Application Implementation ---
+\newpage
+\section{Application Implementation}
+\input{chapters/6.1}
+\input{chapters/6.2}
+\input{chapters/6.3}
+
+\end{document}

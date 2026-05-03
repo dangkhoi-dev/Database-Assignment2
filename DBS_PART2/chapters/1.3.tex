@@ -1,0 +1,36 @@
+\subsection{Semantic Constraints Not Fully Represented in the EERD}
+
+\begin{enumerate}
+    \item The attribute \ent{Rating} of \ent{REVIEW} must take only one of two binary values: \rulehl{\texttt{Recommended}} or \rulehl{\texttt{Not Recommended}}.
+
+    \item A \ent{PLAYER} may submit \rulehl{at most one review} for the same \ent{GAME}.
+
+    \item A \ent{PLAYER} may write a review for a \ent{GAME} only if that game already exists in the player's account or library, for example through purchase, key activation, or free acquisition.
+
+    \item The attribute \ent{WalletBalance} of \ent{PLAYER} must always be \rulehl{greater than or equal to 0}.
+
+    \item The attributes \ent{BasePrice} of \ent{GAME} and \ent{Price} of \ent{DLC} must always be \rulehl{greater than or equal to 0}. A value of 0 is allowed for free-to-play or free content.
+
+    \item The attribute \ent{DiscountPercentage} of \ent{PROMOTION} must always satisfy the condition:
+    \[
+    \rulehl{0 < \texttt{DiscountPercentage} \leq 100}
+    \]
+
+    \item In \ent{PROMOTION}, \ent{EndDate} must always be \rulehl{later than} \ent{StartDate}.
+
+    \item A \ent{PLAYER} cannot add a \ent{GAME} to \ent{CART} if that game already exists in the player's library through the \ent{Owns\_Library} relationship.
+
+    \item The attribute \ent{TotalAmount} of a \ent{TRANSACTION} must equal the sum of all \ent{PriceAtPurchase} values of the games contained in that transaction.
+
+    \item \ent{PurchaseDate} in \ent{Owns\_Library} and \ent{DateAdded} in \ent{Friends\_With} must be \rulehl{on or after} the corresponding user's \ent{JoinDate}.
+
+    \item An achievement may be unlocked only if the corresponding player already owns the related game. Therefore, \ent{UnlockDate} in \ent{Unlocks} must be \rulehl{on or after} the player's \ent{PurchaseDate} for that game.
+
+    \item A \ent{PLAYER} can unlock an \ent{ACHIEVEMENT} only if that achievement belongs to the same \ent{GAME} that the player owns.
+
+    \item A \ent{PLAYER} should have \rulehl{at most one active cart} at any point in time, consistent with the one-to-one relationship between \ent{PLAYER} and \ent{CART} in the proposed design.
+
+    \item A promotion can affect the sale price of a game only during its valid time interval. Therefore, a discounted price may be applied in a transaction only if the transaction date falls between the promotion's \ent{StartDate} and \ent{EndDate}.
+
+    \item A \ent{DLC} may only be purchased or accessed if the corresponding base \ent{GAME} is already owned by the player.
+\end{enumerate}

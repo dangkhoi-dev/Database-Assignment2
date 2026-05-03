@@ -1,0 +1,129 @@
+\section{Mapping}
+
+\noindent\textbf{User} (userID, username, email, passwordHash, joinDate)
+\begin{itemize}[label=-]
+    \item Primary key: userID
+    \item Candidate key: email
+    \item Check total specialization of User.userID in Player, Developer
+\end{itemize}
+
+\noindent\textbf{Player} (userID, walletBalance, profileBio)
+\begin{itemize}[label=-]
+    \item Primary key: userID
+    \item Foreign key: userID to User.userID
+\end{itemize}
+
+\noindent\textbf{Developer} (userID, legalName, bankAccount)
+\begin{itemize}[label=-]
+    \item Primary key: userID
+    \item Foreign key: userID to User.userID
+\end{itemize}
+
+\noindent\textbf{Promotion} (promotionID, name, discountPercentage, startDate, endDate)
+\begin{itemize}[label=-]
+    \item Primary key: promotionID
+\end{itemize}
+
+\noindent\textbf{Genre} (genreName, description) 
+\begin{itemize}[label=-]
+    \item Primary key: genreName
+\end{itemize}
+
+
+\noindent\textbf{DLC} (gameID, DLC\_Name, price, releaseDate, game\_ID)
+\begin{itemize}[label=-]
+    \item Primary key: gameID, DLC\_Name
+    \item Foreign key: gameID to Game.gameID, game\_ID to Game.gameID
+    \item Not null: game\_ID
+\end{itemize}
+
+\noindent\textbf{Achievement} (gameID, achievementName, points, description, game\_ID)
+\begin{itemize}[label=-]
+    \item Primary key: gameID, achievementName
+    \item Foreign key: gameID to Game.gameID, game\_ID to Game.gameID
+    \item Not null: game\_ID
+\end{itemize}
+
+\noindent\textbf{Review} (player\_UserID, reviewID, rating, reviewDate, comment, gameID, PlayerID)
+\begin{itemize}[label=-]
+    \item Primary key: player\_UserID, reviewID
+    \item Foreign key: gameID to Game.gameID, player\_UserID to Player.userID, PlayerID to Player.userID
+    \item Not null: playerID, GameID, player\_UserID
+\end{itemize}
+
+
+\noindent\textbf{Cart} (cartID, lastUpdated, userID)
+\begin{itemize}[label=-]
+    \item Primary key: cartID
+    \item Foreign key: userID to Player.userID
+\end{itemize}
+
+\noindent\textbf{Game} (gameID, title, basePrice, releaseDate, os, processor, memory, graphics, developer\_UserID)
+\begin{itemize}[label=-]
+    \item Primary key: gameID
+    \item Foreign key: developer\_UserID to Developer.userID
+    \item Not null: developer\_UserID
+\end{itemize}
+
+\noindent\textbf{Transaction} (TransactionID, date, paymentMethod, totalAmount, player\_UserID)
+\begin{itemize}[label=-]
+    \item Primary key: TransactionID
+    \item Foreign key: player\_UserID to Player.userID
+    \item Not null: player\_UserID
+\end{itemize}
+
+
+\noindent\textbf{Contain} (TransactionID, gameID)
+\begin{itemize}[label=-]
+    \item Primary key: TransactionID, gameID
+    \item Foreign key: TransactionID to Transaction.TransactionID, gameID to Game.gameID
+\end{itemize}
+
+\noindent\textbf{Buy\_DLC} (TransactionID, gameID, DLC\_Name, PurchaseDate)
+\begin{itemize}[label=-]
+    \item Primary key: TransactionID, gameID, DLC\_Name
+    \item Foreign key: TransactionID to Transaction.TransactionID, (gameID, DLC\_Name) to DLC.(gameID, DLC\_Name)
+\end{itemize}
+
+\noindent\textbf{Owns\_Library} (player\_UserID, gameID, purchaseDate, totalPlaytime)
+\begin{itemize}[label=-]
+    \item Primary key: player\_UserID, gameID
+    \item Foreign key: player\_UserID to Player.userID, gameID to Game.gameID
+\end{itemize}
+
+\noindent\textbf{Belongs\_To} (gameID, genreName)
+\begin{itemize}[label=-]
+    \item Primary key: gameID, genreName
+    \item Foreign key: gameID to Game.gameID, genreName to Genre.genreName
+\end{itemize}
+
+\noindent\textbf{Applies\_To} (gameID, promotionID)
+\begin{itemize}[label=-]
+    \item Primary key: gameID, promotionID
+    \item Foreign key: gameID to Game.gameID, promotionID to Promotion.promotionID
+\end{itemize}
+
+\noindent\textbf{Queue} (cartID, gameID)
+\begin{itemize}[label=-]
+    \item Primary key: cartID, gameID
+    \item Foreign key: cartID to Cart.cartID, gameID to Game.gameID
+\end{itemize}
+
+\noindent\textbf{Friends\_With} (player\_UserID\_1, player\_UserID\_2, dateAdded)
+\begin{itemize}[label=-]
+    \item Primary key: player\_UserID\_1, player\_UserID\_2
+    \item Foreign key: player\_UserID\_1 to Player.userID, player\_UserID\_2 to Player.userID
+\end{itemize}
+
+\noindent\textbf{Unlocks} (player\_UserID, gameID, achievementName, unlockDate)
+\begin{itemize}[label=-]
+    \item Primary key: player\_UserID, gameID, achievementName
+    \item Foreign key: player\_UserID to Player.userID, (gameID, achievementName) to Achievement.(gameID, achievementName)
+\end{itemize}
+
+
+\noindent\textbf{Developer\_Phone} (developer\_UserID, contactPhone)
+\begin{itemize}[label=-]
+    \item Primary key: developer\_UserID, contactPhone
+    \item Foreign key: developer\_UserID to Developer.userID
+\end{itemize}
